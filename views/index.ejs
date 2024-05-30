@@ -1,0 +1,79 @@
+<%- include('layout/header') %>
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col-lg-12">
+            <% if (message) { %>
+                <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong><%= message.message %></strong>
+                </div>
+            <% } %>
+            <div class="table-responsive">
+                <% if (sensor !='') { %>
+                    <table id="sensorTable" class="table table-striped text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>ID</th>
+                                <th>Tank Name</th>
+                                <th>Temperature (°C)</th>
+                                <th>Fahrenheit (°F)</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded by AJAX -->
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <h1 class="text-center text-secondary mt-5">No data found in the database!</h1>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Initialize the DataTable outside the fetchData function
+        var dataTableInstance = $('#sensorTable').DataTable({
+            order: [0, 'desc'],  // Column index 0, descending order
+        });
+
+        function fetchData() {
+            $.ajax({
+                url: '/api/sensors',  // Ensure this matches your server configuration
+                type: 'GET',
+                dataType: 'json',  // Expecting JSON data
+                success: function(sensors) {
+                    dataTableInstance.clear();  // Clears all data from the DataTable
+                    
+                    sensors.forEach(function(sensor, index) {
+                        var formattedDate = moment(sensor.createdAt).format('MMM D, YYYY [at] h:mm A');  // Formatting the date
+                        dataTableInstance.row.add([
+                            index + 1,  // Adjust index for table display
+                            sensor._id,
+                            sensor.tank_name,
+                            sensor.temperature + '°C',
+                            sensor.fahrenheit + '°F',
+                            formattedDate,
+                            `<a href="/edit/${sensor._id}" class="text-warning"><i class="fas fa-edit fa-lg mx-1"></i></a>
+                             <a href="/delete/${sensor._id}" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>`
+                        ]);  // Add new row to DataTable
+                    });
+                    
+                    dataTableInstance.draw();  // Redraw the DataTable to reflect the changes
+                },
+                error: function(error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
+        setInterval(fetchData, 5000); // Refresh data every 5 seconds
+        fetchData(); // Also fetch immediately on page load
+    });
+</script>
+
+<%- include('layout/footer') %>

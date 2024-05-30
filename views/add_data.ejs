@@ -1,0 +1,38 @@
+<%- include('layout/header') %>
+
+<div class="container">
+    <div class="row">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mx-auto mt-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary">
+                            <h5 class="text-light">Add New Data</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="/add" method="post" id="add-form" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="tank_name">Tank Name</label>
+                                    <input type="text" name="tank_name" class="form-control form-control-lg" placeholder="Enter Tank Name" required/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="temperature">Temperature</label>
+                                    <input type="text" name="temperature" class="form-control form-control-lg" placeholder="Enter Temperature" required/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fahrenheit">Fahrenheit</label>
+                                    <input type="text" name="fahrenheit" class="form-control form-control-lg" placeholder="Enter Fahrenheit" required/>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="submit" name="submit" value="Add Data" class="btn btn-primary btn-lg" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('layout/footer') %>
